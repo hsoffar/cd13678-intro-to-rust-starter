@@ -1,9 +1,13 @@
 pub mod ffi;
  use std::ffi::CString;
+ use std::time::Duration;
 
     const WIDTH: i32 = 800;
     const HEIGHT: i32 = 600;
-fn open_window(title: &str) {
+
+pub const FRAME_DELAY: Duration = Duration::from_millis(16);
+
+pub fn open_window(title: &str) {
     let title = CString::new(title).unwrap();
     unsafe {
         ffi::create_game_window(title.as_ptr(), WIDTH, HEIGHT);
@@ -11,36 +15,45 @@ fn open_window(title: &str) {
 }
 
 
+// open_window("Rust Test Window - Sprite Position");
+#[macro_export]
+macro_rules! start_window {
+    ($title:expr) => {
+        $crate::open_window($title);
+ 
+    };
+}
 
+#[macro_export]
 macro_rules! start_window_and_game_loop {
     ($title:expr) => {
-        open_window($title);
+        $crate::open_window($title);
 
         unsafe {
-            while ffi::window_should_close() == 0 {
-                ffi::clear_screen();
-                ffi::update_game_window();
-                std::thread::sleep(FRAME_DELAY);
+            while $crate::ffi::window_should_close() == 0 {
+                $crate::ffi::clear_screen();
+                $crate::ffi::update_game_window();
+                std::thread::sleep($crate::FRAME_DELAY);
             }
         }
     };
 }
 
-
+#[macro_export]
 macro_rules! on_key_press {
     ($key:expr) => {
 
         unsafe {
-        let window: *mut ffi::GLFWwindow = ffi::get_window();
-        ffi::get_key(window, $key) == ffi::GLFW_PRESS 
+        let window: *mut $crate::ffi::GLFWwindow = $crate::ffi::get_window();
+        $crate::ffi::get_key(window, $key) == $crate::ffi::GLFW_PRESS
         }
     };
 }
-
+#[macro_export]
 macro_rules! spawn_sprite {
     ($x:expr, $y:expr, $width:expr, $height:expr, $r:expr, $g:expr, $b:expr) => {{
         unsafe {
-            ffi::create_sprite(
+            $crate::ffi::create_sprite(
                 $x,
                 $y,
                 $width,
@@ -53,7 +66,7 @@ macro_rules! spawn_sprite {
     }};
 }
 
-
+#[macro_export]
 macro_rules! change_sprite_color {
     ($sprite:expr, $r:expr, $g:expr, $b:expr) => {{
    unsafe {

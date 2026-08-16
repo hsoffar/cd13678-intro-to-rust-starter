@@ -1,0 +1,11 @@
+[package]
+name = "rust_test_game"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+my_game_engine = { path = "../my_game_engine" }
+serde = { version = "1", features = ["derive"] }
+reqwest = { version = "0.13", features = ["blocking", "json"] }
+mpsc = "0.3.0"
+ 
