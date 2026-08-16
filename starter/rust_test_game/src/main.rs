@@ -1,5 +1,3 @@
-mod sprit_data;
-mod network;
 use std::sync::mpsc;
 use serde::Deserialize;
 use std::thread;
